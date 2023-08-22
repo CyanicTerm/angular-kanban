@@ -1,80 +1,187 @@
-<div class="container-fluid">
-    <div class="row">        
+<mat-tab-group animationDuration="0ms">
+  <mat-tab *ngFor="let tab of tabs" [label]="tab.name">
+    <div class="container-fluid">
+      <div class="row">
         <div class="col-md-9">
-            <div cdkDropListGroup>
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="example-container">
-                            <h2>TO DO</h2>
-                          
-                            <div
-                              cdkDropList
-                              [cdkDropListData]="tasks"
-                              class="example-list"
-                              (cdkDropListDropped)="drop($event)">
-                              <div class="example-box" *ngFor="let item of tasks; let i = index" cdkDrag>{{item.description}}
-                                <div class="box">
-                                    <button class="btn btn-danger" (click)="deleteTask(i)">Del</button>
-                                    <button class="btn btn-warning" (click)="editTask(item,i)">Edit</button>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
+          <div cdkDropListGroup>
+            <div class="row">
+              <div class="col-md-4">
+                <div class="example-container">
+                  <h2>TO DO</h2>
+
+                  <div
+                    cdkDropList
+                    [cdkDropListData]="tab.toDo"
+                    class="example-list"
+                    (cdkDropListDropped)="drop($event)"
+                  >
+                    <div
+                      class="example-box"
+                      *ngFor="let item of tab.toDo; let i = index"
+                      cdkDrag
+                    >
+                      {{ item.description }}
+                      <div class="box">
+                        <button
+                          class="btn btn-danger"
+                          (click)="deleteTask(i, tab.name)"
+                        >
+                          Del
+                        </button>
+                        <button
+                          class="btn btn-warning"
+                          (click)="editTask(item, i)"
+                        >
+                          Edit
+                        </button>
+                      </div>
                     </div>
-                    <div class="col-md-4">
-                        <div class="example-container">
-                            <h2>IN PROGRESS</h2>
-                          
-                            <div
-                              cdkDropList
-                              [cdkDropListData]="inProgress"
-                              class="example-list"
-                              (cdkDropListDropped)="drop($event)">
-                              <div class="example-box" *ngFor="let item of inProgress; let i = index" cdkDrag>{{item.description}}
-                                <div class="box">
-                                    <button class="btn btn-danger" (click)="deleteTaskInProgress(i)">Del</button>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="example-container">
+                  <h2>IN PROGRESS</h2>
+
+                  <div
+                    cdkDropList
+                    [cdkDropListData]="tab.inProgress"
+                    class="example-list"
+                    (cdkDropListDropped)="drop($event)"
+                  >
+                    <div
+                      class="example-box"
+                      *ngFor="let item of tab.inProgress; let i = index"
+                      cdkDrag
+                    >
+                      {{ item.description }}
+                      <div class="box">
+                        <button
+                          class="btn btn-danger"
+                          (click)="deleteTaskInProgress(i, tab.name)"
+                        >
+                          Del
+                        </button>
+                      </div>
                     </div>
-                    <div class="col-md-4">
-`<div class="example-container">
-    <h2>DONE</h2>
-  
-    <div
-      cdkDropList
-      [cdkDropListData]="done"
-      class="example-list"
-      (cdkDropListDropped)="drop($event)">
-      <div class="example-box" *ngFor="let item of done; let i = index" cdkDrag>{{item.description}}
-        <div class="box">
-            <button class="btn btn-danger" (click)="deleteTaskDone(i)">Del</button>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4">
+                `
+                <div class="example-container">
+                  <h2>DONE</h2>
+
+                  <div
+                    cdkDropList
+                    [cdkDropListData]="tab.done"
+                    class="example-list"
+                    (cdkDropListDropped)="drop($event)"
+                  >
+                    <div
+                      class="example-box"
+                      *ngFor="let item of tab.done; let i = index"
+                      cdkDrag
+                    >
+                      {{ item.description }}
+                      <div class="box">
+                        <button
+                          class="btn btn-danger"
+                          (click)="deleteTaskDone(i, tab.name)"
+                        >
+                          Del
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          style="background: #303030; height: 93vh; position: sticky"
+          class="col-md-3"
+        >
+          <div>
+            <mat-card class="mt-3">
+              <form [formGroup]="tabAddForm">
+                <mat-form-field appearance="outline">
+                  <mat-label>Tab name</mat-label>
+                  <input
+                    formControlName="item"
+                    matInput
+                    placeholder="Placeholder"
+                  />
+                  <mat-icon matSuffix></mat-icon>
+                  <mat-hint>add tab name</mat-hint>
+                </mat-form-field>
+                <div class="box">
+                  <button
+                    *ngIf="!isEditForTabEnabled"
+                    (click)="addTab()"
+                    mat-raised-button
+                    [disabled]="tabAddForm.invalid"
+                    color="primary"
+                  >
+                    Add new
+                  </button>
+
+                  <button class="btn btn-danger" (click)="deleteTab(tab.name)">
+                    Delete current
+                  </button>
+                  <button class="btn btn-warning" (click)="editTab(tab.name)">
+                    Edit current
+                  </button>
+                </div>
+                <button
+                  *ngIf="isEditForTabEnabled"
+                  (click)="updateTab(tab.name)"
+                  mat-raised-button
+                  [disabled]="tabAddForm.invalid"
+                  color="primary"
+                >
+                  Edit
+                </button>
+              </form>
+            </mat-card>
+          </div>
+          <div>
+            <mat-card class="mt-3">
+              <form [formGroup]="todoAddForm">
+                <mat-form-field appearance="outline">
+                  <mat-label>Task name</mat-label>
+                  <input
+                    formControlName="item"
+                    matInput
+                    placeholder="Placeholder"
+                  />
+                  <mat-icon matSuffix></mat-icon>
+                  <mat-hint>add task name</mat-hint>
+                </mat-form-field>
+                <button
+                  *ngIf="!isEditEnabled"
+                  (click)="addTask(tab.name)"
+                  mat-raised-button
+                  [disabled]="todoAddForm.invalid"
+                  color="primary"
+                >
+                  Add
+                </button>
+                <button
+                  *ngIf="isEditEnabled"
+                  (click)="updateTask(tab.name)"
+                  mat-raised-button
+                  [disabled]="todoAddForm.invalid"
+                  color="primary"
+                >
+                  Edit
+                </button>
+              </form>
+            </mat-card>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-        <div style="background: #303030; height: 93vh;" class="col-md-3">
-            <div>
-                <mat-card class="mt-3">
-                    <form [formGroup]="todoForm">
-                        <mat-form-field appearance="outline">
-                            <mat-label>Task name</mat-label>
-                            <input formControlName="item" matInput placeholder="Placeholder">
-                            <mat-icon matSuffix></mat-icon>
-                            <mat-hint>add task name</mat-hint>
-                          </mat-form-field>
-                          <button *ngIf="!isEditEnabled" (click)="addTask()" mat-raised-button [disabled]="todoForm.invalid" color="primary">Add</button>
-                          <button *ngIf="isEditEnabled" (click)="updateTask()" mat-raised-button [disabled]="todoForm.invalid" color="primary">Edit</button>
-
-                    </form>
-                </mat-card>
-            </div>
-        </div>
-    </div>
-</div>
+  </mat-tab>
+</mat-tab-group>
